@@ -28,4 +28,3 @@ def get_launches(limit: int = 5):
     except Exception as e:
         print(f"Error parsing launch data: {e}")
         return {"event" : "launch","error": str(e)}
-

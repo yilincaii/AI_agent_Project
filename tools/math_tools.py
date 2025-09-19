@@ -5,4 +5,3 @@ def multiply(a:float, b:float) :
 
 def multiply(a:float, b:float) :
     return a / b  
-
