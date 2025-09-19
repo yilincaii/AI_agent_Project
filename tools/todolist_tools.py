@@ -1,9 +1,11 @@
 import json
 from typing import Optional
-from todolist_api_python.api import TodoListAPI
-from config.config import TODOLIST_API_KEY
 
-api = TodoListAPI(TODOLIST_API_KEY)
+from todoist_api_python.api import TodoistAPI
+from config.config import TODOIST_API_KEY  # 注意你配置里叫 TODOIST_API_KEY
+
+api = TodoistAPI(TODOIST_API_KEY)
+
 
 def add_task(task:str)->str:
     try:
@@ -21,7 +23,7 @@ def add_task(task:str)->str:
 def get_tasks()->str:
     readable__task = list(dict[str,Optional[str]]) = []
     try:
-        task_api = api.get_tasks()
+        task_list = api.get_tasks()
         for task in task_list:
             due_string = f"Due {task.due_date}" if task.due else "No due date"
 
