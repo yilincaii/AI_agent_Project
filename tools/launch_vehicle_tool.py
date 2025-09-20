@@ -1,6 +1,10 @@
 import requests
+from langchain_core.tools import tool
 
+@tool
 def get_launches(limit: int = 5):
+    """Fetch upcoming rocket launch events with provider, schedule, and location details."""
+
     base_url = f"https://ll.thespacedevs.com/2.3.0/launches/upcoming/?limit=30"
 
     try:

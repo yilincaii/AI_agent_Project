@@ -3,10 +3,13 @@ from typing import List
 
 from flask import Flask, request, Response
 from flask_cors import CORS
-from langgraph.prebuilt import create_supervisor
-
+from langgraph.prebuilt import create_react_agent  
 import json
 
+# 尝试这些可能的导入路径
+#from langgraph.prebuilt import create_supervisor
+from langgraph_supervisor import create_supervisor
+from langchain.chat_models import init_chat_model
 from agents.math_agent import create_math_agent
 from agents.poem_agent import create_poem_agent
 from agents.weather_agent import create_weather_agent
@@ -14,6 +17,11 @@ from agents.launch_vehicle_agent import create_launch_vehicle_agent
 from agents.todolist_agent import create_todoist_agent
 from models.llm import get_llm
 
+
+from tools.launch_vehicle_tool import get_launches
+from tools.todolist_tools import add_task, get_task  
+from tools.weather_tool import get_weather
+from tools.math_tools import add, multiply, divide
 
 app = Flask(__name__)
 CORS(app)
@@ -41,10 +49,11 @@ supervisor_prompt = (
     "If the request is not suitable for any of the specialized agents, feel free to answer it as you would if I was having a normal conversation with you as a standalone language model."
 )
 
+# 然后使用监督器
 supervisor = create_supervisor(
-    model = llm_model,
-    agents = [poem_agent, math_agent, weather_agent, launch_vehicle_agent, todoist_agent],
-    prompt = supervisor_prompt,
+    model=llm_model,
+    agents=[poem_agent, math_agent, weather_agent, launch_vehicle_agent, todoist_agent],
+    prompt=supervisor_prompt,
     add_handoff_back_messages=True,
     output_mode="full_history",
 ).compile()
@@ -74,7 +83,7 @@ def submit_prompt_to_llm(prompt):
                 for i in range(current_message, len(messages)):
                     message = messages[i]
                     message.pretty_print()
-                    response_dict = {agent_name: message.dict()}
+                    response_dict = {agent_name: message.model_dump()}
                     request_process.append(response_dict)
 
                     yield{
@@ -100,7 +109,7 @@ def submit_prompt_to_llm(prompt):
                         "step": request_process,
                         "done": True,
             }
-        
     
+
 if __name__ == "__main__":
-    app.run(port = 11000)
+    app.run(port = 5000)

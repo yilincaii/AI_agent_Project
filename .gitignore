@@ -1,21 +1,23 @@
-# virtual envs
+# Virtual environments
 venv/
 .venv/
 env/
 
-# python caches
+# Python caches
 __pycache__/
 *.py[cod]
 *.pyo
 .pytest_cache/
 .mypy_cache/
-# editors
+
+# Editors
 .vscode/
 .idea/
-# OS
+
+# OS files
 .DS_Store
 Thumbs.db
-# dotenv
+
+# Environment variables (API keys)
 .env
 *.env
-config/*.env
