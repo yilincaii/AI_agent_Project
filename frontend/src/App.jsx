@@ -9,11 +9,11 @@ function App() {
   return (
     <div className="h-screen flex bg-gray-900 text-white">
       <div className="flex-1 flex flex-col border-r border-gray-700">
-        <ChatPanel/>
+        <ChatPanel setAgentSteps = {setAgentSteps}/>
       </div>
 
       <div className="w-1/3 p-4 overflow-y-auto">
-        <AgentFlow/>
+        <AgentFlow steps = {agentSteps}/>
       </div>
     </div>
   );

@@ -3,13 +3,9 @@ from typing import List
 
 from flask import Flask, request, Response
 from flask_cors import CORS
-from langgraph.prebuilt import create_react_agent  
 import json
 
-# 尝试这些可能的导入路径
-#from langgraph.prebuilt import create_supervisor
 from langgraph_supervisor import create_supervisor
-from langchain.chat_models import init_chat_model
 from agents.math_agent import create_math_agent
 from agents.poem_agent import create_poem_agent
 from agents.weather_agent import create_weather_agent
@@ -24,7 +20,12 @@ from tools.weather_tool import get_weather
 from tools.math_tools import add, multiply, divide
 
 app = Flask(__name__)
-CORS(app)
+
+CORS(app, 
+     origins=["http://localhost:5173", "http://localhost:5174"],
+     methods=["GET", "POST", "OPTIONS"],
+     allow_headers=["Content-Type", "Authorization"],
+     supports_credentials=True)
 
 llm_model = get_llm()
 
@@ -61,9 +62,13 @@ supervisor = create_supervisor(
 current_message = 0
 request_process = []
 
-@app.route("/prompt", methods = ["POST"])
+@app.route("/prompt", methods=["POST"])
 def handle_prompt():
-    prompt = request.json["prompt"]
+    data = request.get_json(silent=True) or {}
+    prompt = data.get("prompt", "")
+
+    # 给 SSE 补齐常见头；尤其是有些代理/服务器下需要 X-Accel-Buffering 关闭缓冲
+  
     return Response(generate_stream(prompt), mimetype="text/event-stream")
 
 
@@ -112,4 +117,4 @@ def submit_prompt_to_llm(prompt):
     
 
 if __name__ == "__main__":
-    app.run(port = 5000)
+    app.run(port = 5050)
